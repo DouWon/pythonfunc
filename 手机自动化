@@ -1,0 +1,60 @@
+#coding=utf-8
+
+#导入手机端的自动化测试模块
+from appium import webdriver
+#导入手指模拟模块
+from appium.webdriver.common.touch_action import TouchAction
+#导入时间模块
+import time
+#手机的系统，手机设备名字  要测试的app的包名  要测试的app首页的名字
+android={}   #定义一个安卓手机，信息用字典来保存
+android['platformName']='android'       
+android['deviceName']='127.0.0.1:62001'
+#测试的app包名
+android['appPackage']='com.jincheng.supercaculator'
+#要测试的app首页名
+android['appActivity']='.activity.MainActivity '
+#打开unicode键盘
+android['unicodeKeyboard']=True
+android['resetKeyboard']=True
+
+#实例化一个手机，通过webdriver里面的Remote方法
+#放上服务器的地址、端口号、路径，以及手机的字典变量名,打开
+driver=webdriver.Remote("http://127.0.0.1:4723/wd/hub",android)
+
+#全局等待时间
+driver.implicitly_wait(5)
+
+#定位元素点击
+# driver.find_element_by_name("计算器").click() 
+
+#计算器自动化操作 
+# driver.find_element_by_id("com.jincheng.supercaculator:id/cx").click()
+# driver.find_element_by_id("com.jincheng.supercaculator:id/ic").click()
+# driver.find_element_by_id("com.jincheng.supercaculator:id/lx").click()
+# driver.find_element_by_id("com.jincheng.supercaculator:id/d2")
+# print sum.text
+#手机按键操作
+# driver.keyevent(4)
+# driver.keyevent(4)
+
+#长按屏幕
+# t=TouchAction(driver)
+# e=driver.find_element_by_id("com.jincheng.supercaculator:id/lx")
+# t.long_press(el=e,x=None,y=None,duration=8000)
+# t.perform()
+
+#获取手机屏幕尺寸，滑动
+time.sleep(3)
+xy=driver.get_window_size()
+x=xy['width']
+y=xy['height']
+driver.swipe(0.9*x,0.5*y,0.1*x,0.5*y,1000)
+#创建联系人
+# driver.find_element_by_name("创建新联系人").click()
+# driver.find_element_by_name("姓名").send_keys(u"张三")
+# driver.find_element_by_name("姓名拼音").send_keys("zhang")
+# driver.find_element_by_name("昵称").send_keys("jeacklove")
+# time.sleep(2)
+# driver.find_element_by_name("电话").click()
+# driver.find_element_by_name("手机").send_keys('134000000')
