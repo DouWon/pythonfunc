@@ -1,0 +1,102 @@
+#coding=utf-8
+
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+import SendKeys
+import time
+#导入日期模块
+import datetime
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.wait import WebDriverWait
+
+#将打开浏览器定义为全局变量
+driver=webdriver.Chrome()
+
+#打开游览器的封装函数
+def open_browser(url,t=5):
+    driver.maximize_window()
+    driver.implicitly_wait(t)
+    driver.get(url)
+
+#查找和定位元素的封装函数，method是定位的方法，value是定位的位置和内容
+def find_element(method,value):
+    try:
+        if method=="id":
+            ele=WebDriverWait(driver,7).until(lambda x:x.find_element_by_id(value))
+        elif method=="name":
+            ele=WebDriverWait(driver,7).until(lambda x:x.find_element_by_name(value))
+        elif method=="xpath":
+            ele=WebDriverWait(driver,7).until(lambda x:x.find_element_by_xpath(value))
+        elif method=="link" or method=="link_text":
+            ele=WebDriverWait(driver,7).until(lambda x:x.find_element_by_link_text(value))
+        else:
+            print "not func"
+    except Exception:
+        #显示现在时间日期赋值给变量
+        name=datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        #自动截图浏览器页面以现在的时间日期命名
+        driver.get_screenshot_as_file("D:/cuowupng/%s.png"%(name))
+        return None
+    else:
+        return ele
+
+#在元素中输入   
+def input_(method,value,data):
+    ele = find_element(method,value)
+    if ele!=None:
+        ele.clear()
+        ele.send_keys(data)
+    else:
+        print "Is Not Exists!!!"
+
+#对元素进行点击操作
+def click_(method,value):
+    ele = find_element(method,value)
+    if ele!=None:
+        ele.click()
+    else:
+        print "Is Not Exists!!!"
+
+#拉下框操作封装函数
+def select_(method,value,data):
+    ele=find_element(method,value)
+    if ele!=None:
+        s=Select(ele)
+        s.select_by_value(data)
+    else:
+        print "Is Not Exists!!!"
+
+#调用js脚本函数
+def js_(date):
+        driver.execute_script(data)
+
+#调用键盘函数
+def keys_(data):
+    SendKeys.SendKeys(data)
+
+#调用鼠标点击操作
+def move_(method,value):
+    action=ActionChains(driver)
+    ele=find_elenment(method,value)
+    if ele!=None:
+        action.move_to_element(ele)
+        action.perform()
+        action.reset_actions()
+    else:
+        print "Is Not Exists!!!"
+
+#切换子页面操作函数
+def frame_(status,method=None,value=None):
+    if status=="frame" or status=="iframe":
+        ele=find_element(method,value)
+        if ele!=None:
+            driver.switch_to.frame(ele)
+        else:
+            print "Is Not Exists!"
+    elif status=="parent":
+        driver.switch_to.parent_frame()
+    elif status=="default":
+        driver.switch_to.default_content()
+    else:
+        print "Is Not Exists!!!"
+
